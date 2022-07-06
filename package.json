@@ -1,0 +1,42 @@
+{
+    "name": "workout-tracker",
+    "version": "1.0.0",
+    "description": "small app to track progress in gym",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "format:check": "prettier --check .",
+        "format:write": "prettier --write .",
+        "lint:check": "eslint .",
+        "lint:fix": "eslint --fix .",
+        "start": "nodemon index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/smil3fRomCZ/workout-tracker.git"
+    },
+    "keywords": [
+        "workout",
+        "node",
+        "express"
+    ],
+    "author": "Jan Melicherik",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/smil3fRomCZ/workout-tracker/issues"
+    },
+    "homepage": "https://github.com/smil3fRomCZ/workout-tracker#readme",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "dotenv": "^16.0.1",
+        "express": "^4.18.1",
+        "helmet": "^5.1.0"
+    },
+    "devDependencies": {
+        "eslint": "^8.19.0",
+        "eslint-config-prettier": "^8.5.0",
+        "morgan": "^1.10.0",
+        "nodemon": "^2.0.18",
+        "prettier": "^2.7.1"
+    }
+}
