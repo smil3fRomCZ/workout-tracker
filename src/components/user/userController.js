@@ -1,3 +1,6 @@
+const { validationResult } = require('express-validator');
+const UserService = require('./userService');
+
 exports.getAllUsers = (req, res, next) => {
     try {
         return res.status(200).json({ message: 'Get all users' });
@@ -14,9 +17,23 @@ exports.getUserById = (req, res, next) => {
     }
 };
 
-exports.createNewUser = (req, res, next) => {
+exports.createNewUser = async (req, res, next) => {
+    const validationError = validationResult(req);
+    let userRegistrationData;
+    if (validationError.isEmpty()) {
+        userRegistrationData = req.body;
+    } else {
+        const error = validationError.array({ onlyFirstError: false });
+        if (error.length === 1) {
+            return res.status(400).json({ error: error[0].msg });
+        }
+        return res.status(400).json({ error: error });
+    }
     try {
-        return res.status(200).json({ message: 'Create new user' });
+        await UserService.createNewUser(userRegistrationData);
+        return res.status(200).json({
+            message: 'User registration created successfully',
+        });
     } catch (error) {
         return res.status(400).json({ error: error.message });
     }
@@ -62,9 +79,24 @@ exports.resetUserPassword = (req, res, next) => {
     }
 };
 
-exports.confirmUserPassword = (req, res, next) => {
+exports.confirmUserAccount = async (req, res, next) => {
+    const { registrationHash } = req.params;
+    let isConfirmationComplete;
     try {
-        return res.status(200).json({ message: 'Confirm user password' });
+        if (registrationHash) {
+            isConfirmationComplete = await UserService.confirmUserAccount(
+                registrationHash
+            );
+            if (isConfirmationComplete) {
+                return res
+                    .status(200)
+                    .json({ message: 'Account activated successfully' });
+            }
+            return res.status(401).json({
+                message:
+                    'Wrong activation link! Please create new registration',
+            });
+        }
     } catch (error) {
         return res.status(400).json({ error: error.message });
     }

@@ -8,6 +8,9 @@ const User = sequelize.define('User', {
         primaryKey: true,
         unique: true,
     },
+    nickName: {
+        type: DataTypes.STRING,
+    },
     firstName: {
         type: DataTypes.STRING,
     },
