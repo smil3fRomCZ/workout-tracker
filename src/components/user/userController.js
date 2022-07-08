@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator');
+const { createJwtToken } = require('../../utils/jwt/jwtService');
 const UserService = require('./userService');
 
 exports.getAllUsers = (req, res, next) => {
@@ -39,11 +40,18 @@ exports.createNewUser = async (req, res, next) => {
     }
 };
 
-exports.loginUser = (req, res, next) => {
+exports.loginUser = async (req, res, next) => {
+    const { email, password } = req.body;
     try {
-        return res.status(200).json({ message: 'Login user' });
+        const userData = await UserService.userLogin(email, password);
+        const jwtToken = createJwtToken(userData);
+        res.cookie('jwt', jwtToken, {
+            httpOnly: true,
+            maxAge: process.env.JWT_TOKEN_EXPIRATION,
+        });
+        return res.status(200).json({ message: 'User logged successfully' });
     } catch (error) {
-        return res.status(400).json({ error });
+        return res.status(400).json({ error: error.message });
     }
 };
 

@@ -9,6 +9,14 @@ class UserService {
         return bcrypt.hash(password, 12);
     };
 
+    static #compareUserPasswords = async (userTypedPassword, userEmail) => {
+        const user = await User.findOne({ where: { email: userEmail } });
+        if (user) {
+            return bcrypt.compare(userTypedPassword, user.password);
+        }
+        return false;
+    };
+
     static #createRegistrationLinkHash = () =>
         crypto.randomBytes(12).toString('hex');
 
@@ -35,13 +43,36 @@ class UserService {
         const userRegistration = await User.findOne({
             where: { registrationHash },
         });
-        if (userRegistration) {
-            userRegistration.registrationHash = '';
-            userRegistration.isActivated = true;
-            await userRegistration.save();
-            return true;
+        try {
+            if (userRegistration) {
+                userRegistration.registrationHash = '';
+                userRegistration.isActivated = true;
+                await userRegistration.save();
+                return true;
+            }
+            return false;
+        } catch (error) {
+            throw new Error(error.message);
         }
-        return false;
+    };
+
+    static userLogin = async (inputEmail, inputPassword) => {
+        try {
+            const isPasswordValid = await this.#compareUserPasswords(
+                inputPassword,
+                inputEmail
+            );
+            if (!isPasswordValid) {
+                throw new Error('Wrong user credentials');
+            }
+            const userData = await User.findOne({
+                where: { email: inputEmail },
+            });
+            const { userId, nickName, email } = userData;
+            return { userId, nickName, email };
+        } catch (error) {
+            throw new Error(error.message);
+        }
     };
 }
 

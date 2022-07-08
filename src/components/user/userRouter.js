@@ -1,5 +1,8 @@
 const userRouter = require('express').Router();
 const { body } = require('express-validator');
+const {
+    authentificateUser,
+} = require('../../middleware/authentificateMiddleware');
 
 const userController = require('./userController');
 
@@ -18,9 +21,14 @@ userRouter.post(
     body('nickName').not().isEmpty().isLength({ min: 5 }),
     userController.createNewUser
 );
-userRouter.post('/login', userController.loginUser);
+userRouter.post(
+    '/login',
+    body('email').isEmail(),
+    body('password').isLength({ min: 8 }),
+    userController.loginUser
+);
 userRouter.post('/logout', userController.logoutUser);
-userRouter.patch('/:userId', userController.updateUser);
+userRouter.patch('/:userId', authentificateUser, userController.updateUser);
 userRouter.delete('/:userId', userController.deleteUser);
 
 module.exports = userRouter;
