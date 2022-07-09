@@ -2,17 +2,20 @@ const { validationResult } = require('express-validator');
 const { createJwtToken } = require('../../utils/jwt/jwtService');
 const UserService = require('./userService');
 
-exports.getAllUsers = (req, res, next) => {
+exports.getAllUsers = async (req, res, next) => {
     try {
-        return res.status(200).json({ message: 'Get all users' });
+        const users = await UserService.getAllUsers();
+        return res.status(200).json({ users: users.length, data: users });
     } catch (error) {
         return res.status(400).json({ error: error.message });
     }
 };
 
-exports.getUserById = (req, res, next) => {
+exports.getUserById = async (req, res, next) => {
+    const { userId } = req.params;
     try {
-        return res.status(200).json({ message: 'Get user by id' });
+        const user = await UserService.getUserById(userId);
+        return res.status(200).json({ data: user });
     } catch (error) {
         return res.status(400).json({ error: error.message });
     }

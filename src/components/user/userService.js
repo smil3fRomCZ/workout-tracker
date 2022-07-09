@@ -74,6 +74,34 @@ class UserService {
             throw new Error(error.message);
         }
     };
+
+    static getAllUsers = async () => {
+        try {
+            return await User.findAll({
+                where: {
+                    isActivated: true,
+                    isActive: true,
+                },
+                attributes: ['nickName', 'firstName', 'lastName', 'createdAt'],
+            });
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    };
+
+    static getUserById = async (userId) => {
+        try {
+            const user = await User.findByPk(userId, {
+                attributes: ['nickName', 'firstName', 'lastName', 'createdAt'],
+            });
+            if (!user) {
+                throw new Error('No user found!');
+            }
+            return user;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    };
 }
 
 module.exports = UserService;

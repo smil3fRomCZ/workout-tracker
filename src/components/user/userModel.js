@@ -10,6 +10,7 @@ const User = sequelize.define('User', {
     },
     nickName: {
         type: DataTypes.STRING,
+        unique: true,
     },
     firstName: {
         type: DataTypes.STRING,
