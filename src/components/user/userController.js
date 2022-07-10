@@ -58,11 +58,28 @@ exports.loginUser = async (req, res, next) => {
     }
 };
 
-exports.updateUser = (req, res, next) => {
+exports.updateUser = async (req, res, next) => {
+    const userData = req.body;
+    const { userId } = req.params;
     try {
-        return res.status(200).json({ message: 'Update user' });
+        if (userId) {
+            for (const userDataKey in userData) {
+                if (userData[userDataKey] === '') {
+                    return res.status(400).json({
+                        error: 'Please provide correct inforamtions to update!',
+                    });
+                }
+            }
+            await UserService.updateUser(userId, userData);
+            return res
+                .status(200)
+                .json({ message: 'User updated successfully' });
+        }
+        return res
+            .status(400)
+            .json({ message: 'Missing user data or user identification' });
     } catch (error) {
-        return res.status(400).json({ error });
+        return res.status(400).json({ error: error.message });
     }
 };
 

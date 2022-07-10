@@ -102,6 +102,19 @@ class UserService {
             throw new Error(error.message);
         }
     };
+
+    static updateUser = async (userId, userData) => {
+        try {
+            const user = await User.findByPk(userId);
+            if (!user) {
+                throw new Error('No user found!');
+            }
+            user.update(Object.assign(user, userData));
+            await user.save();
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    };
 }
 
 module.exports = UserService;
