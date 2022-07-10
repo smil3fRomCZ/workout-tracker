@@ -27,6 +27,12 @@ userRouter.post(
     body('password').isLength({ min: 8 }),
     userController.loginUser
 );
+userRouter.post(
+    '/reset-password',
+    body('email').not().isEmpty(),
+    body('email').isEmail(),
+    userController.resetUserPassword
+);
 userRouter.post('/logout', userController.logoutUser);
 userRouter.patch('/:userId', authentificateUser, userController.updateUser);
 userRouter.delete('/', authentificateUser, userController.deleteUser);

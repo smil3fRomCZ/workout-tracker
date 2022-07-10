@@ -116,9 +116,17 @@ exports.deleteUser = async (req, res, next) => {
     }
 };
 
-exports.resetUserPassword = (req, res, next) => {
+exports.resetUserPassword = async (req, res, next) => {
+    const validationError = validationResult(req);
+    if (!validationError.isEmpty()) {
+        return res.status(400).json({ error: 'Please provide valid email' });
+    }
+    const { email } = req.body;
     try {
-        return res.status(200).json({ message: 'Reset user password' });
+        await UserService.resetUserPassword(email);
+        return res
+            .status(200)
+            .json({ message: 'Sent email to complete reset password process' });
     } catch (error) {
         return res.status(400).json({ error: error.message });
     }

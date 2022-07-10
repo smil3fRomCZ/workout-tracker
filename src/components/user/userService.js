@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const sendRegistrationEmail = require('../../utils/emailSender/emailSender');
+const {
+    sendRegistrationEmail,
+    sendResetPasswordEmail,
+} = require('../../utils/emailSender/emailSender');
 const User = require('./userModel');
 
 class UserService {
@@ -124,6 +127,19 @@ class UserService {
         userToDelete.isActive = false;
         await userToDelete.save();
         return userToDelete.isActive;
+    };
+
+    static resetUserPassword = async (email) => {
+        try {
+            const isUserValid = await User.findOne({ where: { email } });
+            if (!isUserValid) {
+                throw new Error('No user found');
+            }
+            await sendResetPasswordEmail(
+                isUserValid.email,
+                isUserValid.nickName
+            );
+        } catch (error) {}
     };
 }
 
