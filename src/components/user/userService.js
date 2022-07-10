@@ -115,6 +115,16 @@ class UserService {
             throw new Error(error.message);
         }
     };
+
+    static deleteUser = async (userId) => {
+        const userToDelete = await User.findByPk(userId);
+        if (!userToDelete) {
+            return new Error('No user found!');
+        }
+        userToDelete.isActive = false;
+        await userToDelete.save();
+        return userToDelete.isActive;
+    };
 }
 
 module.exports = UserService;

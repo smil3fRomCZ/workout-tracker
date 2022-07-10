@@ -85,7 +85,6 @@ exports.updateUser = async (req, res, next) => {
 
 exports.logoutUser = (req, res, next) => {
     try {
-        console.log(req.cookies.jwt);
         if (!req.cookies.jwt) {
             return res
                 .status(400)
@@ -98,9 +97,20 @@ exports.logoutUser = (req, res, next) => {
     }
 };
 
-exports.deleteUser = (req, res, next) => {
+exports.deleteUser = async (req, res, next) => {
+    const userId = Number(req.user.userId);
+    if (isNaN(userId)) {
+        return res
+            .status(400)
+            .json({ error: 'Provided user id must be a number' });
+    }
     try {
-        return res.status(200).json({ message: 'Delete user' });
+        const result = await UserService.deleteUser(userId);
+        if (!result) {
+            return res
+                .status(200)
+                .json({ message: 'User deleted succesfully' });
+        }
     } catch (error) {
         return res.status(400).json({ error: error.message });
     }

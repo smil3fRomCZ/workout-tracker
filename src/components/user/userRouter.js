@@ -29,6 +29,6 @@ userRouter.post(
 );
 userRouter.post('/logout', userController.logoutUser);
 userRouter.patch('/:userId', authentificateUser, userController.updateUser);
-userRouter.delete('/:userId', userController.deleteUser);
+userRouter.delete('/', authentificateUser, userController.deleteUser);
 
 module.exports = userRouter;
