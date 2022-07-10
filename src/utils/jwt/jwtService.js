@@ -8,3 +8,4 @@ exports.createJwtToken = (userData) => {
         expiresIn: TOKEN_EXPIRATION,
     });
 };
+

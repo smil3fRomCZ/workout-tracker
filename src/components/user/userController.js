@@ -85,7 +85,14 @@ exports.updateUser = async (req, res, next) => {
 
 exports.logoutUser = (req, res, next) => {
     try {
-        return res.status(200).json({ message: 'Logout user' });
+        console.log(req.cookies.jwt);
+        if (!req.cookies.jwt) {
+            return res
+                .status(400)
+                .json({ error: 'Cant logout, You are not signed in!' });
+        }
+        res.clearCookie('jwt');
+        return res.status(200).json({ message: 'User logout successfully' });
     } catch (error) {
         return res.status(400).json({ error: error.message });
     }
