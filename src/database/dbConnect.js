@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { Sequelize } = require('sequelize');
 
 const dbConfig = {
@@ -20,13 +21,13 @@ const sequelize = new Sequelize(
     }
 );
 
-const connectToDatabase = async () => {
+const connectToDb = async () => {
     try {
         await sequelize.authenticate();
-        console.log('Connection with DB estabilished');
+        console.log('Connected to DB');
     } catch (error) {
-        console.log('Unable to connect to DB: ', error);
+        console.log('Database coonection failed', error);
     }
 };
 
-module.exports = { connectToDatabase, sequelize };
+module.exports = { sequelize, connectToDb };
