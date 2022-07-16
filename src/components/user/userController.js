@@ -35,7 +35,7 @@ exports.createNewUser = async (req, res, next) => {
     }
     try {
         await UserService.createNewUser(userRegistrationData);
-        return res.status(200).json({
+        return res.status(201).json({
             message: 'User registration created successfully',
         });
     } catch (error) {
